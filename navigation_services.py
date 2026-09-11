@@ -1,21 +1,20 @@
-"""Google Maps Platform and demo navigation adapters for YuvaDrive.
+"""Replaceable open-source navigation providers for YuvaDrive.
 
-The production adapters proxy Places API (New) and Routes API calls so the
-server-side key is never copied into route/search responses.  The browser key
-is separately used only to load the official Maps JavaScript API.
+Public Nominatim and OSRM endpoints are intentionally configured for prototype
+traffic only. Production should configure compliant, preferably self-hosted,
+providers through environment variables.
 """
 from __future__ import annotations
 
 import asyncio
-import json as jsonlib
+import json
 import math
 import os
 from urllib import error as urlerror
+from urllib import parse as urlparse
 from urllib import request as urlrequest
 from dataclasses import dataclass
 from typing import Any
-
-
 
 class NavigationServiceError(Exception):
     """A recoverable upstream navigation error safe to show to a driver."""
@@ -35,114 +34,72 @@ class Destination:
     point: LocationPoint
 
 
-def decode_polyline(encoded: str) -> list[dict[str, float]]:
-    """Decode Google's Encoded Polyline Algorithm Format into map coordinates."""
-    points: list[dict[str, float]] = []
-    index = latitude = longitude = 0
-    while index < len(encoded):
-        values: list[int] = []
-        for _ in range(2):
-            result = shift = 0
-            while True:
-                if index >= len(encoded):
-                    raise ValueError("Invalid encoded polyline")
-                byte = ord(encoded[index]) - 63
-                index += 1
-                result |= (byte & 0x1F) << shift
-                shift += 5
-                if byte < 0x20:
-                    break
-            values.append(~(result >> 1) if result & 1 else result >> 1)
-        latitude += values[0]
-        longitude += values[1]
-        points.append({"lat": latitude / 1e5, "lng": longitude / 1e5})
-    return points
+class OpenSourceNavigationService:
+    """Nominatim geocoding plus OSRM driving routes behind one provider API."""
 
-
-def encode_polyline(points: list[LocationPoint]) -> str:
-    """Small encoder used only for clearly labelled, local demo route data."""
-    output: list[str] = []
-    previous_lat = previous_lng = 0
-    for point in points:
-        for value, previous in ((round(point.latitude * 1e5), previous_lat), (round(point.longitude * 1e5), previous_lng)):
-            delta = value - previous
-            shifted = ~(delta << 1) if delta < 0 else delta << 1
-            while shifted >= 0x20:
-                output.append(chr((0x20 | (shifted & 0x1F)) + 63))
-                shifted >>= 5
-            output.append(chr(shifted + 63))
-        previous_lat, previous_lng = round(point.latitude * 1e5), round(point.longitude * 1e5)
-    return "".join(output)
-
-
-class GoogleMapsService:
-    def __init__(self, api_key: str | None = None) -> None:
-        self.api_key = api_key or os.getenv("GOOGLE_MAPS_API_KEY", "")
-
-    @property
-    def configured(self) -> bool:
-        return bool(self.api_key)
-
-    async def _request(self, method: str, url: str, *, headers: dict[str, str] | None = None, json: dict | None = None) -> dict:
-        if not self.configured:
-            raise NavigationServiceError("Google Maps is not configured. Switch to Demo Mode or add GOOGLE_MAPS_API_KEY.")
-        combined_headers = {"X-Goog-Api-Key": self.api_key, **(headers or {})}
-        body = None if json is None else jsonlib.dumps(json).encode("utf-8")
-        if body is not None:
-            combined_headers["Content-Type"] = "application/json"
-
-        def send() -> dict:
-            request = urlrequest.Request(url, data=body, headers=combined_headers, method=method)
-            with urlrequest.urlopen(request, timeout=10) as response:
-                return jsonlib.loads(response.read())
-        try:
-            return await asyncio.to_thread(send)
-        except (urlerror.URLError, urlerror.HTTPError, TimeoutError, ValueError) as error:
-            raise NavigationServiceError("Google Maps could not complete that request. Check API enablement, billing, key restrictions, and try again.") from error
+    def __init__(self, *, geocoding_url: str | None = None, routing_url: str | None = None) -> None:
+        self.geocoding_url = (geocoding_url or os.getenv("YUVADRIVE_GEOCODING_URL", "https://nominatim.openstreetmap.org")).rstrip("/")
+        self.routing_url = (routing_url or os.getenv("YUVADRIVE_ROUTING_URL", "https://router.project-osrm.org")).rstrip("/")
+        self._destinations: dict[str, Destination] = {}
 
     async def autocomplete(self, query: str) -> list[dict[str, str]]:
-        data = await self._request("POST", "https://places.googleapis.com/v1/places:autocomplete", headers={"X-Goog-FieldMask": "suggestions.placePrediction.placeId,suggestions.placePrediction.text,suggestions.placePrediction.structuredFormat"}, json={"input": query})
-        results = []
-        for suggestion in data.get("suggestions", []):
-            prediction = suggestion.get("placePrediction")
-            if not prediction:
+        try:
+            records = await _get_json(f"{self.geocoding_url}/search", {"q": query, "format": "jsonv2", "addressdetails": 1, "limit": 5}, timeout=8)
+        except (urlerror.URLError, urlerror.HTTPError, TimeoutError, ValueError, json.JSONDecodeError) as error:
+            raise NavigationServiceError("Destination search is temporarily unavailable. Try again or use Demo Mode.") from error
+        suggestions = []
+        for record in records:
+            try:
+                place_id = f"osm-{record['osm_type']}-{record['osm_id']}"
+                point = LocationPoint(float(record["lat"]), float(record["lon"]))
+            except (KeyError, TypeError, ValueError):
                 continue
-            structured = prediction.get("structuredFormat", {})
-            results.append({"place_id": prediction["placeId"], "name": structured.get("mainText", {}).get("text", prediction.get("text", {}).get("text", "Place")), "address": structured.get("secondaryText", {}).get("text", "")})
-        return results
+            display_name = record.get("display_name", "Destination")
+            name, _, address = display_name.partition(",")
+            destination = Destination(place_id, name.strip() or "Destination", address.strip() or display_name, point)
+            self._destinations[place_id] = destination
+            suggestions.append({"place_id": place_id, "name": destination.name, "address": destination.address})
+        return suggestions
 
     async def place_details(self, place_id: str) -> Destination:
-        data = await self._request("GET", f"https://places.googleapis.com/v1/places/{place_id}", headers={"X-Goog-FieldMask": "id,displayName,formattedAddress,location"})
-        location = data.get("location")
-        if not location:
-            raise NavigationServiceError("Google Places did not return a location for that destination.")
-        return Destination(data.get("id", place_id), data.get("displayName", {}).get("text", "Destination"), data.get("formattedAddress", ""), LocationPoint(location["latitude"], location["longitude"]))
+        destination = self._destinations.get(place_id)
+        if not destination:
+            raise NavigationServiceError("That destination has expired. Search for it again.")
+        return destination
 
     async def routes(self, origin: LocationPoint, destination: Destination) -> list[dict[str, Any]]:
-        payload = {"origin": {"location": {"latLng": {"latitude": origin.latitude, "longitude": origin.longitude}}}, "destination": {"placeId": destination.place_id}, "travelMode": "DRIVE", "computeAlternativeRoutes": True, "languageCode": "en-US", "units": "METRIC"}
-        data = await self._request("POST", "https://routes.googleapis.com/directions/v2:computeRoutes", headers={"X-Goog-FieldMask": "routes.duration,routes.distanceMeters,routes.polyline.encodedPolyline,routes.legs"}, json=payload)
+        coordinates = f"{origin.longitude},{origin.latitude};{destination.point.longitude},{destination.point.latitude}"
+        try:
+            data = await _get_json(f"{self.routing_url}/route/v1/driving/{coordinates}", {"alternatives": "true", "overview": "full", "geometries": "geojson", "steps": "true"}, timeout=12)
+        except (urlerror.URLError, urlerror.HTTPError, TimeoutError, ValueError, json.JSONDecodeError) as error:
+            raise NavigationServiceError("Routing is temporarily unavailable. Try again or switch to Demo Mode.") from error
+        if data.get("code") != "Ok" or not data.get("routes"):
+            raise NavigationServiceError("No drivable route could be found. Try another destination.")
         routes = []
-        for index, route in enumerate(data.get("routes", [])):
-            encoded = route.get("polyline", {}).get("encodedPolyline")
-            if not encoded:
+        for index, route in enumerate(data["routes"]):
+            coordinates_data = route.get("geometry", {}).get("coordinates", [])
+            points = [{"lat": lat, "lng": lng} for lng, lat in coordinates_data if isinstance(lat, (int, float)) and isinstance(lng, (int, float))]
+            if len(points) < 2:
                 continue
-            routes.append({"id": f"google-{index}", "distance_meters": route.get("distanceMeters", 0), "duration_seconds": round(float(str(route.get("duration", "0s")).removesuffix("s"))), "encoded_polyline": encoded, "points": decode_polyline(encoded), "source": "google", "legs": route.get("legs", [])})
+            routes.append({"id": f"osrm-{index}", "distance_meters": round(route.get("distance", 0)), "duration_seconds": round(route.get("duration", 0)), "points": points, "source": "osrm", "legs": route.get("legs", [])})
         if not routes:
-            raise NavigationServiceError("Google Routes did not find a drivable route for this destination.")
+            raise NavigationServiceError("Routing returned an incomplete route. Please try again.")
         return routes
 
 
 class DemoNavigationService:
-    """Deterministic, clearly labelled development data; never a Google response."""
+    """Deterministic, clearly labelled fixture data for offline demonstrations."""
+
     destinations = [
-        Destination("demo-meenakshi", "Meenakshi Amman Temple", "Madurai, Tamil Nadu", LocationPoint(9.9195, 78.1193)),
-        Destination("demo-chennai-central", "Chennai Central", "Chennai, Tamil Nadu", LocationPoint(13.0827, 80.2707)),
-        Destination("demo-anna-nagar", "Anna Nagar", "Chennai, Tamil Nadu", LocationPoint(13.0850, 80.2101)),
+        Destination("demo-madurai-junction", "Madurai Junction Railway Station", "Madurai, Tamil Nadu, India", LocationPoint(9.9190, 78.1190)),
+        Destination("demo-meenakshi", "Meenakshi Amman Temple", "Madurai, Tamil Nadu, India", LocationPoint(9.9195, 78.1193)),
+        Destination("demo-chennai-central", "Chennai Central", "Chennai, Tamil Nadu, India", LocationPoint(13.0827, 80.2707)),
+        Destination("demo-anna-nagar", "Anna Nagar", "Chennai, Tamil Nadu, India", LocationPoint(13.0850, 80.2101)),
     ]
 
     async def autocomplete(self, query: str) -> list[dict[str, str]]:
-        needle = query.lower()
-        matches = [d for d in self.destinations if needle in f"{d.name} {d.address}".lower()]
+        terms = query.lower().split()
+        matches = [d for d in self.destinations if all(term in f"{d.name} {d.address}".lower() for term in terms)]
         return [{"place_id": d.place_id, "name": d.name, "address": d.address} for d in matches]
 
     async def place_details(self, place_id: str) -> Destination:
@@ -152,14 +109,12 @@ class DemoNavigationService:
         raise NavigationServiceError("Demo destination was not found.")
 
     async def routes(self, origin: LocationPoint, destination: Destination) -> list[dict[str, Any]]:
-        # Curved fixture geometry intentionally represents a simulated road, not live data.
-        midpoint = LocationPoint((origin.latitude + destination.point.latitude) / 2 + .004, (origin.longitude + destination.point.longitude) / 2 - .004)
-        variants = [[origin, midpoint, destination.point], [origin, LocationPoint(midpoint.latitude - .006, midpoint.longitude + .008), destination.point]]
+        midpoint = LocationPoint((origin.latitude + destination.point.latitude) / 2 + 0.004, (origin.longitude + destination.point.longitude) / 2 - 0.004)
+        variants = [[origin, midpoint, destination.point], [origin, LocationPoint(midpoint.latitude - 0.006, midpoint.longitude + 0.008), destination.point]]
         output = []
         for index, points in enumerate(variants):
-            distance = _path_distance(points) * (1.12 + index * .08)
-            encoded = encode_polyline(points)
-            output.append({"id": f"demo-{index}", "distance_meters": round(distance), "duration_seconds": round(distance / (8.5 - index)), "encoded_polyline": encoded, "points": decode_polyline(encoded), "source": "demo", "legs": []})
+            distance = _path_distance(points) * (1.12 + index * 0.08)
+            output.append({"id": f"demo-{index}", "distance_meters": round(distance), "duration_seconds": round(distance / (8.5 - index)), "points": [{"lat": point.latitude, "lng": point.longitude} for point in points], "source": "demo", "legs": []})
         return output
 
 
@@ -167,8 +122,20 @@ def _path_distance(points: list[LocationPoint]) -> float:
     return sum(_haversine(a, b) for a, b in zip(points, points[1:]))
 
 
+async def _get_json(url: str, params: dict[str, str | int], *, timeout: int) -> Any:
+    """Make a bounded provider request without adding a runtime HTTP dependency."""
+    query = urlparse.urlencode(params)
+    request = urlrequest.Request(f"{url}?{query}", headers={"User-Agent": "YuvaDrive-prototype/1.0 (navigation demo)", "Accept": "application/json"})
+
+    def send() -> Any:
+        with urlrequest.urlopen(request, timeout=timeout) as response:
+            return json.loads(response.read())
+
+    return await asyncio.to_thread(send)
+
+
 def _haversine(a: LocationPoint, b: LocationPoint) -> float:
-    radius = 6371000
+    radius = 6_371_000
     d_lat, d_lng = math.radians(b.latitude - a.latitude), math.radians(b.longitude - a.longitude)
     value = math.sin(d_lat / 2) ** 2 + math.cos(math.radians(a.latitude)) * math.cos(math.radians(b.latitude)) * math.sin(d_lng / 2) ** 2
     return 2 * radius * math.asin(math.sqrt(value))
