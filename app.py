@@ -17,7 +17,7 @@ from typing import Literal
 from fastapi import FastAPI, HTTPException, status
 
 from navigation_services import (
-    DemoNavigationService, GoogleMapsService, LocationPoint, NavigationServiceError,
+    DemoNavigationService, LocationPoint, NavigationServiceError, OpenSourceNavigationService,
 )
 from fastapi.requests import Request
 from fastapi.responses import RedirectResponse
@@ -191,7 +191,7 @@ class SafetyCoach:
 
 store = SQLiteStore(DB_PATH)
 coach = SafetyCoach()
-google_navigation = GoogleMapsService()
+open_source_navigation = OpenSourceNavigationService()
 demo_navigation = DemoNavigationService()
 _telemetry = {
     "speed_kmh": 42.0, "speed_limit_kmh": 50, "latitude": 12.9719, "longitude": 77.5943,
@@ -201,24 +201,29 @@ _telemetry = {
 
 
 def navigation_mode() -> str:
-    """Demo remains the safe default until a real key is configured."""
-    return "demo" if os.getenv("YUVADRIVE_DEMO_MODE", "").lower() in {"1", "true", "yes"} or not google_navigation.configured else "google"
+    """Demo is opt-in; open-source providers are the normal prototype mode."""
+    return "demo" if os.getenv("YUVADRIVE_DEMO_MODE", "").lower() in {"1", "true", "yes"} else "open_source"
 
 
 def navigation_service():
-    return demo_navigation if navigation_mode() == "demo" else google_navigation
+    return demo_navigation if navigation_mode() == "demo" else open_source_navigation
 
 
 def carbonstride(routes: list[dict]) -> list[dict]:
-    """Configurable local estimates, intentionally separate from Google routing data."""
+    """Transparent, configurable prototype scoring—not traffic or legal-safety data."""
     grams_per_km = float(os.getenv("YUVADRIVE_CO2_GRAMS_PER_KM", "145"))
     litres_per_100_km = float(os.getenv("YUVADRIVE_FUEL_L_PER_100KM", "7.2"))
     for route in routes:
         km = route["distance_meters"] / 1000
         route["estimated_fuel_litres"] = round(km * litres_per_100_km / 100, 2)
         route["estimated_co2_grams"] = round(km * grams_per_km)
-        route["safety_score"] = max(60, min(98, round(96 - km * .35)))
-        route["estimate_source"] = "YuvaDrive configurable estimate; not Google-provided data"
+        turns = sum(len(leg.get("steps", [])) for leg in route.get("legs", []))
+        complexity_penalty = min(14, turns * 0.7)
+        speed_risk_penalty = min(10, (route["distance_meters"] / max(route["duration_seconds"], 1) * 3.6) / 12)
+        route["safety_score"] = max(60, min(98, round(96 - km * 0.35 - complexity_penalty - speed_risk_penalty)))
+        route["eco_score"] = max(50, min(99, round(99 - route["estimated_co2_grams"] / 55)))
+        route["turn_count"] = turns
+        route["estimate_source"] = "YuvaDrive prototype estimate: configurable fuel/CO₂ assumptions and route complexity; not live traffic, weather, or legal safety data."
     recommended = min(routes, key=lambda route: route["estimated_co2_grams"] + route["duration_seconds"] / 12 - route["safety_score"] * 3)
     for route in routes:
         route["carbonstride_recommended"] = route is recommended
@@ -337,9 +342,7 @@ def set_language(preference: LanguagePreference) -> dict:
 
 @app.get("/api/navigation/config")
 def navigation_config() -> dict:
-    # A browser Maps JavaScript key is necessarily visible to the browser. Restrict it
-    # by HTTP referrer; server Routes/Places calls remain proxied and never expose it.
-    return {"mode": navigation_mode(), "maps_javascript_key": google_navigation.api_key if navigation_mode() == "google" else None, "off_route_threshold_meters": float(os.getenv("YUVADRIVE_OFF_ROUTE_THRESHOLD_METERS", "50"))}
+    return {"mode": navigation_mode(), "off_route_threshold_meters": float(os.getenv("YUVADRIVE_OFF_ROUTE_THRESHOLD_METERS", "65")), "search_debounce_ms": int(os.getenv("YUVADRIVE_SEARCH_DEBOUNCE_MS", "350")), "route_recalculation_cooldown_ms": int(os.getenv("YUVADRIVE_ROUTE_COOLDOWN_MS", "30000")), "map_attribution": "© OpenStreetMap contributors"}
 
 
 @app.post("/api/navigation/places")
@@ -364,7 +367,7 @@ async def calculate_routes(request: RouteRequest) -> dict:
     try:
         destination = await navigation_service().place_details(request.place_id)
         routes = carbonstride(await navigation_service().routes(LocationPoint(request.origin_latitude, request.origin_longitude), destination))
-        return {"mode": navigation_mode(), "destination": {"place_id": destination.place_id, "name": destination.name, "address": destination.address, "latitude": destination.point.latitude, "longitude": destination.point.longitude}, "routes": routes, "estimates_disclaimer": "Fuel, CO₂, safety, and CarbonStride values are YuvaDrive estimates. Distance, duration, geometry, and legs are Google data only in Google mode."}
+        return {"mode": navigation_mode(), "destination": {"place_id": destination.place_id, "name": destination.name, "address": destination.address, "latitude": destination.point.latitude, "longitude": destination.point.longitude}, "routes": routes, "estimates_disclaimer": "Distance, duration, geometry, and instructions come from OSRM in open-source mode. Fuel, CO₂, eco, safety, and CarbonStride are configurable YuvaDrive prototype estimates, not live traffic, weather, or legal safety data."}
     except NavigationServiceError as error:
         raise HTTPException(status_code=503, detail=str(error)) from error
 

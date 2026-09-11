@@ -1,13 +1,13 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>YuvaDrive · Navigation</title><link rel="stylesheet" href="/static/app.css"></head>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>YuvaDrive · Navigation</title><link rel="stylesheet" href="/static/app.css"><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"></head>
 <body class="navigation-body"><main class="navigation-shell">
-  <div id="map" class="navigation-map" aria-label="Navigation map"><div class="map-fallback"><b>YuvaDrive map</b><span>Loading Google Maps…</span></div></div>
+  <div id="map" class="navigation-map" aria-label="OpenStreetMap navigation map"><div class="map-fallback"><b>YuvaDrive map</b><span>Loading OpenStreetMap…</span></div></div>
   <header class="navigation-top"><a class="brand nav-brand" href="/dashboard">Yuva<b>Drive</b></a><div class="mode-badge" id="modeBadge">CHECKING MAP CONFIGURATION</div>
-    <div class="destination-search"><span aria-hidden="true">⌕</span><input id="destinationInput" autocomplete="off" placeholder="Search destination" aria-label="Search destination"><button id="clearSearch" class="icon-button" aria-label="Clear destination" hidden>×</button></div>
+    <div class="destination-search"><span aria-hidden="true">⌕</span><input id="destinationInput" autocomplete="off" placeholder="Search destination" aria-label="Search destination"><button id="voiceSearch" class="icon-button" aria-label="Search by voice" title="Search by voice">♩</button><button id="clearSearch" class="icon-button" aria-label="Clear destination" hidden>×</button></div>
     <div id="searchStatus" class="search-status" hidden></div><div id="suggestions" class="suggestions" role="listbox"></div>
   </header>
   <button id="recenter" class="recenter" title="Re-center current location" aria-label="Re-center current location">◎<span>Re-center</span></button>
   <section id="routePanel" class="route-panel" hidden></section>
   <section id="drivePanel" class="drive-panel" hidden></section>
   <div id="notice" class="navigation-notice" hidden></div>
-</main><script src="/static/navigation.js"></script></body></html>
+</main><script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><script src="/static/navigation.js"></script></body></html>

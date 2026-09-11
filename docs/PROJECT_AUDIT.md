@@ -1,48 +1,51 @@
 # YuvaDrive project audit
 
-## Current architecture
-The repository is a small server-rendered Python prototype. `app.py` exposes a FastAPI application, holds mutable telemetry in process memory, and renders Jinja templates from `templates/`. The active UI is plain HTML with Tailwind and Leaflet loaded from CDNs. `requirements.txt` lists FastAPI, Uvicorn, and Jinja only. No Flutter/mobile project, database, environment configuration, test suite, CI, static asset pipeline, or backend package structure exists.
+## Audit scope and startup
+This audit was completed before the open-source navigation implementation. YuvaDrive is a server-rendered **FastAPI + Jinja + vanilla JavaScript** web prototype. Start it with `./scripts/run` or `uvicorn app:app --reload`; `/` redirects to the main dashboard at `/dashboard`.
 
-The four root `*.txt` files are uploaded HTML design explorations. They are not referenced by the running application, and include remote assets and inline Tailwind configuration.
+## Existing architecture
+- `app.py` is the FastAPI entry point. It serves templates, static assets, API routes, a small SQLite repository, seeded demo profile/trip data, and the supportive `SafetyCoach`.
+- `navigation_services.py` contains the route/search provider adapters and deterministic demo navigation fixture.
+- `templates/` contains server-rendered HTML pages; `static/app.css` provides shared styling and `static/navigation.js` drives the navigation page.
+- `data/yuvadrive.db` is created at runtime. `database/schema/sqlite.sql` documents the database schema.
+- `tests/test_api.py` is the existing API test suite. `requirements.txt` lists FastAPI, Uvicorn, and Jinja2.
 
-## Existing features
-- A demo login endpoint and login page.
-- Live-speed telemetry read/update endpoints backed by an in-memory dictionary.
-- A threshold-based overspeed nudge and browser text-to-speech.
-- A Leaflet eco-route map with seeded waypoints.
-- A compact, mobile-first drive HUD.
+## Existing pages and reusable features
+- `/dashboard`: safety snapshot, private trip history, community goal, and challenge preview.
+- `/hud`: current-speed display, safety coaching, demo controls, voice synthesis cues, and trip completion.
+- `/routes`: a route/search screen with browser GPS handling, a demo fallback, CarbonStride estimates, and navigation telemetry.
+- `/login`: a deliberately simple demo sign-in acknowledgement.
+- Existing reusable backend pieces include `SQLiteStore`, `SafetyCoach`, `carbonstride`, telemetry endpoints, trip persistence, preference/language support, and the demo navigation service.
 
-## Missing or incomplete features
-- Product identity is still **DRIVOZA**, not YuvaDrive.
-- No persistence, driver profile, trip lifecycle, trip history, safety score, rewards, challenges, streaks, analytics, multilingual nudge selection, or community-safe aggregate view.
-- No API versioning, response schemas, OpenAPI metadata beyond FastAPI defaults, health check, or validation tests.
-- Route data lacks measurable eco/safety comparisons.
-- Login returns a fixed token and does not create a real authenticated session; it is appropriate only for a demo.
-- Existing pages use externally hosted CDN assets, so the map/style experience needs network access.
+## Existing APIs and integrations
+- Local APIs cover authentication acknowledgement, dashboard data, telemetry, trips, challenges, language preferences, static eco-route data, and navigation search/routing/telemetry.
+- SQLite is the only database integration. Authentication is demo-only and no external credentials are stored.
+- The pre-change navigation implementation referenced a proprietary map/search/route stack. It must be replaced, not retained, to meet the open-source navigation requirement.
 
-## Broken features and risks
-- Process restart loses all telemetry and any hypothetical driver state.
-- A shared global telemetry object makes all visitors share one trip and is unsuitable for concurrent users.
-- The old safety nudge can repeat voice output after changes without a configurable preference.
-- Leaflet and Tailwind external CDN dependencies prevent a fully offline browser presentation.
-- No credentials are currently stored (good), but any production authentication/telemetry use requires privacy, consent, retention, and security design.
+## Dependencies and assets
+- Runtime dependencies: FastAPI, Uvicorn, Jinja2, and HTTPX.
+- UI dependencies currently use external browser CDNs only where needed. Leaflet and its CSS will be added for OpenStreetMap rendering.
+- There is no React, Flutter, bundler, component framework, CI configuration, or compiled asset pipeline. Root `*.txt` files are design references, not executable application files.
 
-## Technical debt
-- All backend concerns are mixed in `app.py`; schemas, persistence, and safety rules are not isolated.
-- HTML templates contain long, dense inline scripts and style dependencies.
-- Design-source `.txt` files duplicate UI concepts and should be treated as reference material rather than runtime code.
+## Files to modify
+- `app.py`: replace the proprietary navigation configuration/service selection with open-source provider configuration and navigation APIs.
+- `navigation_services.py`: provide Nominatim and OSRM adapters, normalized route results, and a separate demo fallback.
+- `templates/routes_map.html`, `static/navigation.js`, and `static/app.css`: render the Leaflet/OpenStreetMap navigation experience while retaining YuvaDrive styling and existing page routes.
+- `README.md`, `.env.example`, and `docs/API.md`: document the revised implementation and configuration.
 
-## Recommended architecture
-For this prototype, retain FastAPI and Jinja while introducing a small feature-oriented backend: a SQLite repository, deterministic behaviour/nudge service, typed Pydantic contracts, and explicit API endpoints. This remains runnable without paid services. For production, replace demo authentication with an identity provider, move SQLite to PostgreSQL/PostGIS, emit device telemetry through authenticated ingestion, and move analytics to privacy-reviewed aggregates. A Flutter client can consume the same REST contracts later; none exists to extend today.
+## New files to add
+- `docs/NAVIGATION_ARCHITECTURE.md`: provider abstractions, scoring and demo boundaries.
+- `docs/IMPLEMENTATION_REPORT.md`: final implementation summary and limitations.
+
+## Risks and mitigations
+- Public Nominatim and OSRM instances are suitable only for low-volume demos; requests are debounced client-side and cached/abstracted server-side so production can use compliant/self-hosted providers.
+- Browser GPS and speech recognition depend on user permission, HTTPS (except localhost), hardware, and browser support. A clearly marked demo mode remains available.
+- OSRM does not provide real-time traffic or legal speed limits. Fuel, CO₂, and safety values are labelled YuvaDrive estimates; speed is awareness-only without authoritative speed-limit data.
+- Navigation geometry and external network calls can fail. The UI must present recoverable messages and never expose raw errors.
 
 ## Implementation plan
-1. Preserve the FastAPI entry point and add SQLite-backed demo state, safety scoring, rewards/challenges, route options, and language-aware deterministic nudges.
-2. Build a responsive YuvaDrive dashboard/drive interface around those APIs; keep the existing drive/route/login pathways compatible.
-3. Add docs, database schema, tests, setup/run helpers, health checks, and a seeded offline demo.
-4. Verify API behavior and page rendering before release.
-
-## Prototype limitations
-- Safety calculations are illustrative and must not be used for enforcement, insurance, emergency response, or real-time driving decisions.
-- The route geometry, speed limits, weather, GPS, and rewards are seeded demo data, not authoritative sources.
-- Data is intentionally local SQLite with no real credentials or authentication.
-- Voice is represented by browser speech synthesis; supported voices depend on the browser/device.
+1. Replace the legacy provider code with Nominatim, OSRM, and a deterministic demo adapter behind a common interface.
+2. Add Leaflet with OpenStreetMap attribution and rework `/routes` to use geolocation, destination search, route alternatives, scoring, and CarbonStride comparison.
+3. Add active navigation, marker updates, recentering, distance-to-route checks, cooldown-based recalculation, speed awareness, and optional browser voice assistance.
+4. Preserve dashboard/HUD/profile functionality and link their navigation actions to the upgraded screen.
+5. Update configuration, docs, API tests, and README; run automated tests and browser-level smoke checks.
