@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{colors:{"inverse-on-surface":"#eaf1ff","surface-dim":"#cbdbf5","on-primary":"#ffffff","on-background":"#0b1c30","primary-fixed":"#dbe1ff","secondary-fixed":"#6ffbbe","on-tertiary-fixed":"#2a1700","surface-tint":"#0053db","outline-variant":"#c3c6d7","on-secondary-fixed-variant":"#005236","surface-container-lowest":"#ffffff","surface-container-high":"#dce9ff","on-secondary-fixed":"#002113","error-container":"#ffdad6","primary-container":"#2563eb","error":"#ba1a1a","secondary-container":"#6cf8bb","on-tertiary":"#ffffff","secondary-fixed-dim":"#4edea3","on-tertiary-container":"#ffeedd","on-primary-fixed":"#00174b","on-secondary":"#ffffff","outline":"#737686","tertiary":"#784b00","tertiary-fixed-dim":"#ffb95f","surface-container":"#e5eeff","secondary":"#006c49","on-error":"#ffffff","surface-container-highest":"#d3e4fe","primary-fixed-dim":"#b4c5ff","tertiary-fixed":"#ffddb8","on-surface-variant":"#434655","inverse-surface":"#213145","on-surface":"#0b1c30","surface-variant":"#d3e4fe","surface":"#f8f9ff","on-tertiary-fixed-variant":"#653e00","surface-container-low":"#eff4ff","on-primary-container":"#eeefff","inverse-primary":"#b4c5ff","surface-bright":"#f8f9ff","on-primary-fixed-variant":"#003ea8","primary":"#004ac6","on-secondary-container":"#00714d","background":"#f8f9ff","tertiary-container":"#996100","on-error-container":"#93000a"},borderRadius:{DEFAULT:"0.25rem",lg:"0.5rem",xl:"0.75rem",full:"9999px"},spacing:{"gutter-mobile":"1rem","gutter-desktop":"1.5rem","space-2xl":"2rem","space-3xl":"3rem","space-sm":"0.75rem","space-2xs":"0.25rem","margin-desktop":"3rem","space-md":"1rem","margin-mobile":"1rem","margin-tablet":"2rem","space-xs":"0.5rem","space-xl":"1.5rem","space-lg":"1.25rem"},fontFamily:{"telemetry-numeral":["Plus Jakarta Sans"],"headline-md":["Plus Jakarta Sans"],"headline-xl":["Plus Jakarta Sans"],"label-sm":["Plus Jakarta Sans"],"headline-lg":["Plus Jakarta Sans"],"body-sm":["Plus Jakarta Sans"],"label-lg":["Plus Jakarta Sans"],"body-lg":["Plus Jakarta Sans"],"headline-sm":["Plus Jakarta Sans"],"headline-xl-mobile":["Plus Jakarta Sans"],"label-md":["Plus Jakarta Sans"],"body-md":["Plus Jakarta Sans"],"display-hero":["Plus Jakarta Sans"]},fontSize:{"telemetry-numeral":["32px",{lineHeight:"36px",letterSpacing:"-0.03em",fontWeight:"800"}],"headline-md":["20px",{lineHeight:"28px",letterSpacing:"-0.015em",fontWeight:"600"}],"headline-xl":["36px",{lineHeight:"44px",letterSpacing:"-0.025em",fontWeight:"700"}],"label-sm":["11px",{lineHeight:"14px",letterSpacing:"0.04em",fontWeight:"700"}],"headline-lg":["24px",{lineHeight:"32px",letterSpacing:"-0.02em",fontWeight:"700"}],"body-sm":["12px",{lineHeight:"18px",letterSpacing:"0.005em",fontWeight:"400"}],"label-lg":["14px",{lineHeight:"20px",letterSpacing:"0.01em",fontWeight:"600"}],"body-lg":["16px",{lineHeight:"26px",letterSpacing:"-0.005em",fontWeight:"400"}],"headline-sm":["16px",{lineHeight:"24px",letterSpacing:"-0.01em",fontWeight:"600"}],"headline-xl-mobile":["28px",{lineHeight:"36px",letterSpacing:"-0.02em",fontWeight:"700"}],"label-md":["12px",{lineHeight:"16px",letterSpacing:"0.02em",fontWeight:"600"}],"body-md":["14px",{lineHeight:"22px",letterSpacing:"0em",fontWeight:"400"}],"display-hero":["48px",{lineHeight:"56px",letterSpacing:"-0.03em",fontWeight:"800"}]}}}};</script><style>@layer base{html,body{width:100vw;margin:0;padding:0;}body{overscroll-behavior:none;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style></head><body class="bg-surface font-body-md text-body-md text-on-surface flex flex-col min-h-screen"><header class="fixed top-0 w-full z-50 pt-safe bg-surface-container-lowest/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-20 px-gutter-mobile flex items-center justify-between gap-space-xs"><div class="flex items-center gap-space-xs min-w-0 flex-1"><img alt="DRIVOZA Brand Logo" class="h-8 w-auto object-contain flex-shrink-0" src="https://lh3.googleusercontent.com/aida/AEtjO1VCc026dzK1zkbJEnadVwJzq7vX0fV4OsA1oQsooiwomC40laBWjtl19BbPCEXweSggnfP2u-T0ZFEEfXcMZ-CHC7rXBef67-xa5rLAb_Kc1G3SfKSZr3Y0vrKl0XkO_wictEGjlFWEXpo-xpEgMND2OLJ_S1F-qYLU8rA17GXUUJv2IRcaGTHuyHmf16au_Ab0jmgoeTcIReAXQbkBy7OQbOHmNBHf68w8oWFs_GYY2vOt40ZB-pfClpSb"/><div class="flex flex-col min-w-0"><div class="flex items-center gap-space-xs"><span class="font-headline-sm text-headline-sm font-bold tracking-tight text-on-surface truncate">DRIVOZA</span><span class="text-outline-variant">•</span><span class="font-label-md text-label-md font-semibold text-primary truncate">Drive Mode Hud</span></div><span class="font-body-sm text-body-sm text-on-surface-variant truncate hidden xs:block">Better Driving. Safer Roads.</span></div></div><div class="flex items-center gap-space-xs flex-shrink-0"><div class="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-secondary-fixed/30 text-secondary"><span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span><span class="font-label-sm text-label-sm uppercase">GPS Safe</span></div><button aria-label="Notifications" class="w-11 h-11 flex items-center justify-center rounded-full text-on-surface-variant hover:text-primary transition-colors" type="button"><span class="material-symbols-outlined text-[22px]">notifications</span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center flex-shrink-0 shadow-sm"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="flex flex-col relative w-full pt-20 pb-24 bg-surface min-h-screen"><div class="flex flex-col w-full px-gutter-mobile space-y-space-md">
+<!-- Top Telemetry & Session Header -->
+<section class="w-full bg-surface-container-lowest rounded-2xl p-space-md shadow-sm space-y-space-sm">
+<div class="flex items-center justify-between">
+<div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary-fixed/40 text-on-secondary-fixed-variant">
+<span class="w-2.5 h-2.5 rounded-full bg-secondary animate-ping"></span>
+<span class="font-label-sm text-label-sm uppercase tracking-wider">Live Trip Active</span>
+</div>
+<div class="flex items-center gap-space-xs text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px] text-secondary" style="font-variation-settings: 'FILL' 1;">satellite_alt</span>
+<span class="font-label-sm text-label-sm">GPS ±1 km/h</span>
+</div>
+</div>
+<!-- Duration & Distance Matrix -->
+<div class="grid grid-cols-2 gap-space-xs pt-1">
+<div class="bg-surface-container-low rounded-xl p-space-sm flex flex-col justify-center">
+<span class="font-label-sm text-label-sm uppercase text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">timer</span> Duration
+        </span>
+<span class="font-telemetry-numeral text-headline-md font-bold text-on-surface tracking-tight mt-0.5" id="trip-duration">14:32</span>
+</div>
+<div class="bg-surface-container-low rounded-xl p-space-sm flex flex-col justify-center">
+<span class="font-label-sm text-label-sm uppercase text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">route</span> Distance
+        </span>
+<span class="font-telemetry-numeral text-headline-md font-bold text-on-surface tracking-tight mt-0.5">6.8 <span class="text-body-sm font-normal text-on-surface-variant">km</span></span>
+</div>
+</div>
+<!-- Connected Vehicle Context Banner -->
+<div class="flex items-center justify-between px-space-sm py-2 rounded-xl bg-surface-container text-on-surface-variant">
+<div class="flex items-center gap-space-xs min-w-0">
+<div class="w-7 h-7 rounded-full bg-primary-container/15 text-primary flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-[18px]">bluetooth_connected</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-label-md text-label-md text-on-surface font-semibold truncate">Honda Beacon Connected</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant truncate">Audio cues &amp; gentle nudges ready</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-[20px] text-secondary">check_circle</span>
+</div>
+</section>
+<!-- Central Real-Time Speed HUD -->
+<section class="w-full bg-surface-container-lowest rounded-2xl p-space-lg shadow-md relative overflow-hidden flex flex-col items-center">
+<!-- Ambient subtle background glow for safe driving rhythm -->
+<div class="absolute -top-16 left-1/2 -translate-x-1/2 w-64 h-64 bg-secondary-fixed/20 rounded-full blur-3xl pointer-events-none"></div>
+<!-- Status Pill: Safe Compliance -->
+<div class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-secondary-fixed/30 text-secondary mb-space-sm shadow-sm">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">verified</span>
+<span class="font-label-sm text-label-sm tracking-wider uppercase font-bold">Safe Speed Zone</span>
+</div>
+<!-- Main Gauge & Road Sign Split Container -->
+<div class="flex items-center justify-center gap-6 w-full my-2">
+<!-- Live Speed Readout -->
+<div class="flex flex-col items-center">
+<div class="flex items-baseline leading-none">
+<span class="font-display-hero text-display-hero text-on-surface font-extrabold tracking-tighter" id="current-speed">42</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface-variant font-bold uppercase tracking-wider mt-1">km/h</span>
+</div>
+<!-- Divider -->
+<div class="h-16 w-0.5 bg-surface-container rounded-full"></div>
+<!-- Speed Limit Traffic Sign Badge -->
+<div class="flex flex-col items-center">
+<div class="w-16 h-16 rounded-full bg-surface-container-lowest flex items-center justify-center p-1.5 shadow-sm ring-4 ring-error">
+<div class="w-full h-full rounded-full flex flex-col items-center justify-center">
+<span class="font-telemetry-numeral text-headline-sm font-black text-on-surface leading-none">50</span>
+<span class="font-label-sm text-[9px] text-error font-extrabold uppercase leading-none mt-0.5">Limit</span>
+</div>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant mt-1.5">Zone Max</span>
+</div>
+</div>
+<!-- Dynamic Threshold Progress Bar (Buffer before 48 km/h caution limit) -->
+<div class="w-full max-w-xs mt-3 space-y-1.5">
+<div class="flex justify-between items-center text-on-surface-variant font-label-sm text-label-sm">
+<span>0</span>
+<span class="text-secondary font-bold">Buffer: 6 km/h safe margin</span>
+<span>50</span>
+</div>
+<div class="h-3 w-full bg-surface-container rounded-full relative overflow-hidden p-0.5 flex items-center">
+<!-- Progress bar filling up to 42 of 50 km/h (84%) -->
+<div class="h-full rounded-full bg-gradient-to-r from-primary to-secondary transition-all duration-700" id="speed-progress" style="width: 84%;"></div>
+<!-- Caution threshold indicator pin at 48km/h (96%) -->
+<div class="absolute right-[4%] top-0 bottom-0 w-1 bg-tertiary rounded-full shadow-sm" title="Caution Margin (48 km/h)"></div>
+</div>
+<div class="flex justify-end pr-1">
+<span class="font-label-sm text-[10px] text-tertiary">Caution trigger at 48 km/h</span>
+</div>
+</div>
+</section>
+<!-- Highlighted Smart Safety Nudge Card -->
+<section class="w-full bg-surface-container-lowest rounded-2xl p-space-md shadow-sm space-y-space-sm relative overflow-hidden">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<div class="w-8 h-8 rounded-full bg-secondary-fixed/50 text-secondary flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]">graphic_eq</span>
+</div>
+<div>
+<span class="font-label-md text-label-md font-bold text-on-surface">Smart Safety Nudge</span>
+<span class="block font-label-sm text-label-sm text-on-surface-variant">Real-time encouraging audio coach</span>
+</div>
+</div>
+<button class="px-2.5 py-1 rounded-full bg-surface-container-high text-primary font-label-sm text-label-sm hover:bg-primary-fixed transition-colors flex items-center gap-1" id="toggle-nudge-btn" type="button">
+<span class="material-symbols-outlined text-[14px]">swap_horiz</span> Switch Scenario
+      </button>
+</div>
+<!-- Active Nudge Bubble -->
+<div class="p-space-sm rounded-xl bg-surface-container-low transition-all duration-300" id="nudge-content-box">
+<div class="flex items-start gap-space-xs">
+<span class="material-symbols-outlined text-secondary text-[22px] flex-shrink-0 mt-0.5" id="nudge-icon" style="font-variation-settings: 'FILL' 1;">thumb_up</span>
+<div class="space-y-1">
+<p class="font-body-md text-body-md font-medium text-on-surface" id="nudge-text">
+            “Great job maintaining a safe speed! You are smoothly within the 50 km/h limit.”
+          </p>
+<span class="inline-flex items-center gap-1 font-label-sm text-label-sm text-secondary font-semibold" id="nudge-subtext">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span> +15 Safe Driving Points Earned
+          </span>
+</div>
+</div>
+</div>
+<!-- Voice Control Quick Bar -->
+<div class="flex items-center justify-between pt-1">
+<div class="flex items-center gap-2">
+<div class="flex space-x-0.5 items-center h-4">
+<span class="w-1 h-2 bg-primary rounded-full animate-bounce"></span>
+<span class="w-1 h-3.5 bg-primary rounded-full animate-bounce [animation-delay:150ms]"></span>
+<span class="w-1 h-4 bg-primary rounded-full animate-bounce [animation-delay:300ms]"></span>
+<span class="w-1 h-2 bg-primary rounded-full animate-bounce [animation-delay:75ms]"></span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Voice Nudges Enabled</span>
+</div>
+<button class="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-surface-container text-on-surface font-label-md text-label-md hover:bg-surface-container-high transition-colors" id="mute-voice-btn" type="button">
+<span class="material-symbols-outlined text-[16px]" id="mute-icon">volume_up</span>
+<span id="mute-label">Mute Voice</span>
+</button>
+</div>
+</section>
+<!-- Driving Controls & Safety Assistance Row -->
+<section class="w-full space-y-space-xs">
+<div class="grid grid-cols-2 gap-space-xs">
+<!-- Pause Trip Button -->
+<button class="w-full py-3 px-space-sm rounded-xl bg-surface-container-lowest text-on-surface font-label-lg text-label-lg font-semibold flex items-center justify-center gap-2 shadow-sm active:scale-95 transition-all" type="button">
+<span class="material-symbols-outlined text-[20px] text-tertiary">pause_circle</span>
+<span>Pause Trip</span>
+</button>
+<!-- SOS Roadside Ping Trigger -->
+<button class="w-full py-3 px-space-sm rounded-xl bg-error-container text-on-error-container font-label-lg text-label-lg font-semibold flex items-center justify-center gap-2 shadow-sm active:scale-95 transition-all" type="button">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">emergency_home</span>
+<span>SOS Safe Ping</span>
+</button>
+</div>
+<!-- Complete & Save Trip CTA -->
+<button class="w-full py-3.5 px-space-md rounded-xl bg-error text-on-error font-label-lg text-label-lg font-bold flex items-center justify-center gap-2 shadow-md active:scale-95 transition-all" type="button">
+<span class="material-symbols-outlined text-[22px]">flag_circle</span>
+<span>End Trip &amp; Save Analytics</span>
+</button>
+</section>
+<!-- In-Vehicle Telemetry Footnote & Disclaimers -->
+<footer class="w-full text-center pb-space-sm">
+<p class="font-body-sm text-body-sm text-on-surface-variant/80 px-space-xs">
+      Bluetooth only monitors vehicle connectivity context. Speed and trajectory are calculated via GPS telemetry. Illustrative Demo UI.
+    </p>
+</footer>
+</div>
+<script>
+  (function() {
+    let scenarioToggle = false;
+    let isMuted = false;
+
+    const toggleBtn = document.getElementById('toggle-nudge-btn');
+    const nudgeText = document.getElementById('nudge-text');
+    const nudgeSubtext = document.getElementById('nudge-subtext');
+    const nudgeIcon = document.getElementById('nudge-icon');
+    const nudgeBox = document.getElementById('nudge-content-box');
+    const speedDisplay = document.getElementById('current-speed');
+    const speedProgress = document.getElementById('speed-progress');
+
+    if (toggleBtn) {
+      toggleBtn.addEventListener('click', () => {
+        scenarioToggle = !scenarioToggle;
+        if (scenarioToggle) {
+          nudgeText.innerHTML = '&ldquo;Upcoming school zone in 300m. Please ease throttle safely.&rdquo;';
+          nudgeSubtext.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span> Proactive Safety Advisory';
+          nudgeSubtext.className = 'inline-flex items-center gap-1 font-label-sm text-label-sm text-tertiary font-semibold';
+          nudgeIcon.innerText = 'school';
+          nudgeIcon.className = 'material-symbols-outlined text-tertiary text-[22px] flex-shrink-0 mt-0.5';
+          nudgeBox.classList.remove('bg-surface-container-low');
+          nudgeBox.classList.add('bg-tertiary-fixed/40');
+          if (speedDisplay) speedDisplay.innerText = '36';
+          if (speedProgress) speedProgress.style.width = '72%';
+        } else {
+          nudgeText.innerHTML = '&ldquo;Great job maintaining a safe speed! You are smoothly within the 50 km/h limit.&rdquo;';
+          nudgeSubtext.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span> +15 Safe Driving Points Earned';
+          nudgeSubtext.className = 'inline-flex items-center gap-1 font-label-sm text-label-sm text-secondary font-semibold';
+          nudgeIcon.innerText = 'thumb_up';
+          nudgeIcon.className = 'material-symbols-outlined text-secondary text-[22px] flex-shrink-0 mt-0.5';
+          nudgeBox.classList.remove('bg-tertiary-fixed/40');
+          nudgeBox.classList.add('bg-surface-container-low');
+          if (speedDisplay) speedDisplay.innerText = '42';
+          if (speedProgress) speedProgress.style.width = '84%';
+        }
+      });
+    }
+
+    const muteBtn = document.getElementById('mute-voice-btn');
+    const muteIcon = document.getElementById('mute-icon');
+    const muteLabel = document.getElementById('mute-label');
+
+    if (muteBtn) {
+      muteBtn.addEventListener('click', () => {
+        isMuted = !isMuted;
+        if (isMuted) {
+          muteIcon.innerText = 'volume_off';
+          muteLabel.innerText = 'Unmute Voice';
+          muteBtn.classList.add('opacity-75');
+        } else {
+          muteIcon.innerText = 'volume_up';
+          muteLabel.innerText = 'Mute Voice';
+          muteBtn.classList.remove('opacity-75');
+        }
+      });
+    }
+  })();
+</script></main><nav class="fixed bottom-0 w-full z-50 pb-safe bg-surface-container-lowest/95 backdrop-blur-xl shadow-[0_-2px_12px_rgba(0,0,0,0.04)]" data-active-classes="text-primary font-semibold [&amp;_span.indicator]:w-5 [&amp;_span.indicator]:bg-primary [&amp;_div.icon-pill]:bg-primary-fixed/40"><div class="flex justify-around items-center h-16 px-space-xs"><a class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] py-1 text-on-surface-variant transition-all" data-path="dashboard" href="#"><div class="icon-pill w-10 h-7 rounded-full flex items-center justify-center transition-colors"><span class="material-symbols-outlined text-[22px]">space_dashboard</span></div><span class="font-label-sm text-label-sm mt-0.5">Home</span><span class="indicator w-0 h-0.5 rounded-full transition-all duration-300 mt-0.5"></span></a><a aria-current="page" class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] py-1 transition-all text-primary font-semibold [&amp;_span.indicator]:w-5 [&amp;_span.indicator]:bg-primary [&amp;_div.icon-pill]:bg-primary-fixed/40" data-path="drive-mode-hud" href="#"><div class="icon-pill w-10 h-7 rounded-full flex items-center justify-center transition-colors"><span class="material-symbols-outlined text-[22px]">speed</span></div><span class="font-label-sm text-label-sm mt-0.5">Drive</span><span class="indicator w-0 h-0.5 rounded-full transition-all duration-300 mt-0.5"></span></a><a class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] py-1 text-on-surface-variant transition-all" data-path="safety-analytics" href="#"><div class="icon-pill w-10 h-7 rounded-full flex items-center justify-center transition-colors"><span class="material-symbols-outlined text-[22px]">verified_user</span></div><span class="font-label-sm text-label-sm mt-0.5">Safety</span><span class="indicator w-0 h-0.5 rounded-full transition-all duration-300 mt-0.5"></span></a><a class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] py-1 text-on-surface-variant transition-all" data-path="eco-routes" href="#"><div class="icon-pill w-10 h-7 rounded-full flex items-center justify-center transition-colors"><span class="material-symbols-outlined text-[22px]">eco</span></div><span class="font-label-sm text-label-sm mt-0.5">Eco</span><span class="indicator w-0 h-0.5 rounded-full transition-all duration-300 mt-0.5"></span></a><a class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] py-1 text-on-surface-variant transition-all" data-path="community-challenges" href="#"><div class="icon-pill w-10 h-7 rounded-full flex items-center justify-center transition-colors"><span class="material-symbols-outlined text-[22px]">groups</span></div><span class="font-label-sm text-label-sm mt-0.5">Community</span><span class="indicator w-0 h-0.5 rounded-full transition-all duration-300 mt-0.5"></span></a></div></nav></body></html>
