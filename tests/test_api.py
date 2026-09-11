@@ -33,3 +33,23 @@ def test_routes_and_challenges_have_demo_content():
     assert len(client.get("/api/routes/eco").json()["options"]) == 2
     joined = client.post("/api/challenges/phone-free/join")
     assert joined.status_code == 200 and joined.json()["joined"] is True
+
+
+def test_navigation_demo_search_destination_and_road_route(monkeypatch):
+    monkeypatch.setenv("YUVADRIVE_DEMO_MODE", "true")
+    config = client.get("/api/navigation/config").json()
+    assert config["mode"] == "demo"
+    places = client.post("/api/navigation/places", json={"query": "Meenakshi"}).json()
+    assert places["suggestions"][0]["place_id"] == "demo-meenakshi"
+    route = client.post("/api/navigation/routes", json={"origin_latitude": 9.9252, "origin_longitude": 78.1198, "place_id": "demo-meenakshi"})
+    assert route.status_code == 200
+    data = route.json()
+    assert len(data["routes"]) == 2
+    assert len(data["routes"][0]["points"]) >= 3
+    assert data["routes"][0]["estimate_source"].startswith("YuvaDrive")
+
+
+def test_navigation_handles_unknown_demo_destination(monkeypatch):
+    monkeypatch.setenv("YUVADRIVE_DEMO_MODE", "true")
+    response = client.post("/api/navigation/places/not-a-place")
+    assert response.status_code == 404
